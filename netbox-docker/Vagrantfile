@@ -1,0 +1,52 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  config.vm.box = "ubuntu/jammy64"
+  config.vm.hostname = "netbox-ubuntu"
+
+  config.vm.network "forwarded_port", guest: 8000, host: 8000, host_ip: "127.0.0.1"
+  
+  ############################################################
+  # Configure Vagrant to use VirtualBox:
+  ############################################################
+  config.vm.provider "virtualbox" do |vb|
+    # Netbox-docker with OS consistently uses 1.0 GB of RAM
+    # 1.5 to 2 GB or RAM helps with better response
+    vb.memory = 1500
+    # Docker container management can be CPU intensive
+    vb.cpus = 2
+  end
+  
+  ############################################################
+  # Install netbox-docker requirements
+  ############################################################
+  config.vm.provision "shell", inline: <<-SHELL
+    # Update and install
+    apt-get update
+    apt-get install -y git
+    apt-get -y autoremove
+
+    # Install Docker
+    # per https://docs.docker.com/engine/install/ubuntu/#install-using-the-convenience-script
+    # and post install per https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sh get-docker.sh
+    groupadd docker
+    adduser vagrant docker
+
+    echo "NetBox-Docker requirements of git and docker installed"
+    echo "Follow: https://github.com/netbox-community/netbox-docker#quickstart"
+  SHELL
+
+end
