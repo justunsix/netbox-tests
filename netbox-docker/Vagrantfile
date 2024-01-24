@@ -1,6 +1,12 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+unless Vagrant.has_plugin?("vagrant-docker-compose")
+  system("vagrant plugin install vagrant-docker-compose")
+  puts "Dependencies installed, please try the command again."
+  exit
+end
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -23,7 +29,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
     # Netbox-docker with OS consistently uses 1.0 GB of RAM
     # 1.5 to 2 GB or RAM helps with better response
-    vb.memory = 1500
+    vb.memory = 2048
     # Docker container management can be CPU intensive
     vb.cpus = 2
   end
@@ -31,22 +37,28 @@ Vagrant.configure("2") do |config|
   ############################################################
   # Install netbox-docker requirements
   ############################################################
+
+  # Install Docker and Docker Compose  
+  # Required plugin: vagrant plugin install vagrant-docker-compose
+  config.vm.provision :docker
+  config.vm.provision :docker_compose
+
   config.vm.provision "shell", inline: <<-SHELL
     # Update and install
     apt-get update
     apt-get install -y git
     apt-get -y autoremove
 
-    # Install Docker
-    # per https://docs.docker.com/engine/install/ubuntu/#install-using-the-convenience-script
-    # and post install per https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sh get-docker.sh
-    groupadd docker
-    adduser vagrant docker
+    # Get netbox-docker as vagrant user
+    # per https://github.com/netbox-community/netbox-docker#quickstart
+    sudo -H -u vagrant sh -c 'git clone -b release https://github.com/netbox-community/netbox-docker.git'
+    sudo -H -u vagrant sh -c 'cd netbox-docker'
+    sudo -H -u vagrant sh -c 'cp /vagrant/docker-compose.override.yml /home/vagrant/netbox-docker/docker-compose.override.yml'
+    
+    echo "To start NetBox, go to /home/vagrant/netbox-docker and run:"
+    echo "docker-compose pull"
+    echo "docker-compose up"
 
-    echo "NetBox-Docker requirements of git and docker installed"
-    echo "Follow: https://github.com/netbox-community/netbox-docker#quickstart"
   SHELL
 
 end
