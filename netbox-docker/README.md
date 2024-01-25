@@ -11,7 +11,9 @@ Before you begin, ensure you have met the following requirements installed:
 
 `vagrant plugin install vagrant-docker-compose`
 
-### Run
+## Usage
+
+Start the virtual machine hosting Netbox.
 
 ```sh
 # Start VM
@@ -26,9 +28,9 @@ docker compose pull
 docker compose up
 ```
 
-shvagrant up`
+See the application at <http://127.0.0.1:8000/>
 
-Then follow instructions in the [netbox-docker quickstart](https://github.com/netbox-community/netbox-docker#quickstart) and see the application at <http://127.0.0.1:8000/>
+For details on these instructions, see the [netbox-docker quickstart](https://github.com/netbox-community/netbox-docker#quickstart).
 
 ### Troubleshooting
 
