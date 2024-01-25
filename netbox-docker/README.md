@@ -13,7 +13,7 @@ Before you begin, ensure you have met the following requirements installed:
 
 ## Usage
 
-Start the virtual machine hosting Netbox.
+Start the virtual machine hosting Netbox. The `Vagrantfile` will use an Ubuntu image and on it install git, docker and docker compose, and pull the latest netbox-docker repository. It will copy the `docker-compose-override.yml` in this repository to be used by netbox-docker.
 
 ```sh
 # Start VM
