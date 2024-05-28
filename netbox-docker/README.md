@@ -35,3 +35,20 @@ For details on these instructions, see the [netbox-docker quickstart](https://gi
 ### Troubleshooting
 
 - Sometimes the `docker compose up` will have problems. If so, stop and restart with `docker compose down` and `docker compose up`.
+
+## Configuring NetBox
+
+To configure NetBox before running it, go into the git cloned `netbox-docker/configuration` directory modify the `configuration.py` in the directory.
+
+```sh
+vagrant up
+vagrant ssh
+# Go to NetBox configuration
+cd netbox-docker/configuration
+vim configuration.py
+# make changes to variables
+```
+
+### Example
+
+To set up single sign on using Microsoft Entra ID (formerly Azure Active Directory), include/override the variables explained at [Microsoft Azure AD instructions in NetBox Documentation](https://docs.netbox.dev/en/stable/administration/authentication/microsoft-azure-ad/).
