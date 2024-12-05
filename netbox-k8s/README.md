@@ -32,3 +32,4 @@ Use `kubectl` and ` commands to manage the cluster
 
 - [minikube start](https://minikube.sigs.k8s.io/docs/start/)
 - [Getting started with Minikube in Vagrant](https://www.youtube.com/watch?v=r1NY08qKF_c)
+
